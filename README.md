@@ -1,4 +1,3 @@
-
 # 🚀 Lead Qualification Backend Service
 
 ## 📌 Overview
@@ -11,7 +10,7 @@ The goal is to create a backend service that:
 * Scores each lead’s **buying intent (High / Medium / Low)** using **rule-based logic + AI reasoning**
 * Returns the final results through REST APIs
 
-This is similar to how modern CRMs and sales platforms (like HubSpot, Outreach, Apollo) qualify leads, enabling sales teams to focus on the best prospects.
+This mimics modern CRMs and sales platforms (like HubSpot, Outreach, Apollo), enabling sales teams to focus on the best prospects.
 
 ---
 
@@ -49,17 +48,17 @@ This is similar to how modern CRMs and sales platforms (like HubSpot, Outreach, 
 * **Database**: Postgres with Drizzle ORM
 * **File Handling**: Multer (CSV upload) + csv-parser
 * **Deployment**: Render
-* **Optional**: Docker for containerization
+* **Containerization**: Docker
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Setup Instructions (Local)
 
 1. **Clone Repo**
 
 ```bash
-git clone https://github.com/your-repo.git
-cd your-repo
+git clone https://github.com/vaishnav-3/Lead-qualification
+cd Lead-qualification
 ```
 
 2. **Install Dependencies**
@@ -74,6 +73,7 @@ npm install
 ```
 PORT=8000
 GEMINI_API_KEY=your_gemini_api_key_here
+DATABASE_URL=postgres://username:password@your-neon-endpoint:5432/dbname
 ```
 
 4. **Run the Server**
@@ -86,97 +86,59 @@ Server will run at: **[http://localhost:8000](http://localhost:8000)**
 
 ---
 
-## 🧪 API Testing
+## 🐳 Docker Setup
 
-We’ve provided a ready-to-use **Postman collection** for testing:
-👉 [Postman Collection Link](https://.postman.co/workspace/My-Workspace~beecabe3-57b0-450b-896e-a812dcfdd182/collection/44508653-aaf63673-9198-450a-9adc-1e9c32f6718f?action=share&creator=44508653&active-environment=44508653-619a9e74-9ba3-4f6d-9168-68e419f56981)
+### 1. Build Docker Image
 
-### 📋 Testing Guide
-
-#### 1. Create Offer
-
-**POST** `/api/offer`
-
-```json
-{
-  "name": "AI Outreach Automation",
-  "value_props": ["24/7 outreach", "6x more meetings", "Automated follow-ups"],
-  "ideal_use_cases": ["B2B SaaS mid-market", "Sales teams", "Growth companies"]
-}
+```bash
+docker build -t lead-qualification-backend .
 ```
 
-#### 2. Get Current Offer
+### 2. Run Container
 
-**GET** `/api/offer`
-
-#### 3. Upload Leads (CSV)
-
-**POST** `/api/leads/upload` → Upload file in `form-data` with key `file`.
-Sample CSV:
-
-```csv
-name,role,company,industry,location,linkedin_bio
-John Doe,CEO,TechCorp,SaaS,San Francisco,Tech leader with 10 years experience in B2B software
-Jane Smith,VP Sales,DataCorp,Software,New York,Sales expert specializing in mid-market growth
-Mike Johnson,Head of Growth,StartupXYZ,Technology,Austin,Growth hacker focused on B2B SaaS scaling
+```bash
+docker run -p 8000:8000 \
+  -e GEMINI_API_KEY="your_gemini_api_key_here" \
+  -e DATABASE_URL="postgres://username:password@your-neon-endpoint:5432/dbname" \
+  lead-qualification-backend
 ```
 
-#### 4. Get All Leads
+* Server will run inside Docker and be accessible at: `http://localhost:8000`
 
-**GET** `/api/leads`
 
-#### 5. Score Leads (Main Function)
+### 3. Optional: Use `.env` File
 
-**POST** `/api/score`
+Create `.env`:
 
-* Uses **Gemini AI** → Make sure `GEMINI_API_KEY` is set
-
-#### 6. Get Results
-
-**GET** `/api/results`
-Returns:
-
-```json
-[
-  {
-    "name": "Ava Patel",
-    "role": "Head of Growth",
-    "company": "FlowMetrics",
-    "intent": "High",
-    "score": 85,
-    "reasoning": "Fits ICP SaaS mid-market and role is decision maker."
-  }
-]
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+DATABASE_URL=postgres://username:password@your-neon-endpoint:5432/dbname
+PORT=8000
 ```
 
-#### 7. Export Results
+Run Docker using:
 
-**GET** `/api/export` → Downloads CSV
-
-#### 8. Health Check
-
-**GET** `/health`
+```bash
+docker run --env-file .env -p 8000:8000 lead-qualification-backend
+```
 
 ---
 
-## ⚡ Rule Logic Recap
+## 🧪 API Testing
 
-* **Role Relevance**: Decision maker (+20), Influencer (+10), else 0
-* **Industry Match**: Exact ICP (+20), Adjacent (+10), else 0
-* **Data Completeness**: All fields present (+10)
-* **AI Score**: High=50, Medium=30, Low=10
-* **Final Score** = Rule Score + AI Score
+We’ve provided a ready-to-use **Postman collection** for testing:
+👉 [Postman Collection Link](https://www.postman.com/workspace/My-Workspace~beecabe3-57b0-450b-896e-a812dcfdd182/collection/44508653-aaf63673-9198-450a-9adc-1e9c32f6718f?action=share&source=copy-link&creator=44508653)
+
+Follow the **Testing Guide** (Create Offer → Upload Leads → Score → Results → Export CSV → Health check).
 
 ---
 
 ## 📦 Deployment
 
-The service is deployed on **[insert platform: Render / Railway / Vercel / Heroku]**.
-Live API Base URL:
+The service can be deployed:
 
-```
-https://lead-qualification-4g36.onrender.com/health
-```
+* **Render** → Live API URL: `https://lead-qualification-4g36.onrender.com/health`
+* **Docker** → Run anywhere (local, cloud, or container platforms)
 
 ---
 
@@ -184,4 +146,4 @@ https://lead-qualification-4g36.onrender.com/health
 
 Built as part of the Backend Engineer Hiring Assignment.
 
----
+
