@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use('/api', salesRoutes);
 
-app.get('/', (req, res) => {
+app.get('/health', (req, res) => {
   res.json({
     message: "Sales Lead Scoring API",
     status: "running"
