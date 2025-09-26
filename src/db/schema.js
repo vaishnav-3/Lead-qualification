@@ -1,7 +1,7 @@
-import { pgTable, uuid, varchar, text, integer, timestamp, jsonb } from 'drizzle-orm/pg-core';
+const  { pgTable, uuid, varchar, text, integer, timestamp, jsonb } = require('drizzle-orm/pg-core');
 
 // Offers table - stores product/offer information
-export const offers = pgTable('offers', {
+const offers = pgTable('offers', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   value_props: jsonb('value_props').notNull(), // Array of strings
@@ -11,7 +11,7 @@ export const offers = pgTable('offers', {
 });
 
 // Leads table - stores lead information from CSV
-export const leads = pgTable('leads', {
+const leads = pgTable('leads', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   role: varchar('role', { length: 255 }),
@@ -23,7 +23,7 @@ export const leads = pgTable('leads', {
 });
 
 // Results table - stores scoring results
-export const results = pgTable('results', {
+const results = pgTable('results', {
   id: uuid('id').defaultRandom().primaryKey(),
   lead_id: uuid('lead_id').references(() => leads.id).notNull(),
   offer_id: uuid('offer_id').references(() => offers.id).notNull(),
@@ -34,3 +34,6 @@ export const results = pgTable('results', {
   reasoning: text('reasoning').notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
 });
+
+
+module.exports = { offers, leads, results };

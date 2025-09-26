@@ -1,5 +1,5 @@
 const express = require("express");
-
+const salesRoutes = require('./routes/sales.route');
 
 const app = express();
 const PORT = 8000;
@@ -7,7 +7,7 @@ const PORT = 8000;
 app.use(express.json());
 
 
-app.use('/example', exampleRouter);
+app.use('/api', salesRoutes);
 
 app.get('/', (req, res) => {
   res.json({
